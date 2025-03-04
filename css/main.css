@@ -1223,7 +1223,7 @@ pre code {
   vertical-align: middle;
 }
 .links-of-author a::before {
-  background: #ffe0ff;
+  background: #812aff;
   display: inline-block;
   margin-right: 3px;
   transform: translateY(-2px);
@@ -2523,16 +2523,4 @@ body {
   background-attachment: fixed;
   background-size: cover;
   background-position: 50% 50%;
-}
-.content-wrap {
-  opacity: 1;
-}
-.sidebar {
-  opacity: 1;
-}
-.header-inner {
-  background: #fff;
-}
-.popup {
-  opacity: 1;
 }
