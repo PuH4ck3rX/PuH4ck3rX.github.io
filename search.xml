@@ -1,11 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>ret2dlresolve超详解</title>
-    <url>/2025/03/04/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/</url>
-    <content><![CDATA[]]></content>
-  </entry>
-  <entry>
     <title>Hello World</title>
     <url>/2025/03/04/hello-world/</url>
     <content><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
@@ -21,6 +16,37 @@
 <h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
 
 <p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
+]]></content>
+  </entry>
+  <entry>
+    <title>ret2dlresolve超详解</title>
+    <url>/2025/03/04/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/</url>
+    <content><![CDATA[<h2 id="ret2dlresovle攻击原理"><a href="#ret2dlresovle攻击原理" class="headerlink" title="ret2dlresovle攻击原理"></a>ret2dlresovle攻击原理</h2><p>ret2dlresovle攻击的本质就是在于程序在动态链接时篡改相关结构体，让程序解析到错误的函数，进而达成攻击</p>
+<h3 id="Lazy-Binding"><a href="#Lazy-Binding" class="headerlink" title="Lazy Binding"></a>Lazy Binding</h3><p>当程序在第一次调用某个函数时，会调用**_dl_runtime_resolve**函数从libc中获取这个函数的真实地址</p>
+<p>那么具体是怎么实现的呢？</p>
+<p>动态链接的程序调用函数时会先call的时一个函数的plt表，如read@plt，执行read@plt表里的第一条指令，read@plt表里的第一条指令是jmp到got表中，执行got表里存放的地址所指向的指令，got表默认存放的是read@plt中下一条指令的地址，通过**_dl_runtime_resolve**函数解析libc中的真实地址后会将函数的真是地址填入到该函数的got表中</p>
+<img src="/2025/03/04/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/Snipaste_2025-03-04_18-24-55.png" class="" title="Snipaste_2025-03-04_18-24-55">
+
+<p><strong>_dl_runtime_resolve</strong>函数有两个参数，一个是reloc_index，一个是link_map的地址</p>
+<p>这里和普通函数调用方式不一样，会先push一个reloc_index，然后跳转到一个地址，push link_map的地址</p>
+<p>然后再跳转到**_dl_runtime_resolve**，我们会发现 <strong>_dl_runtime_resolve</strong>函数最终调用的是_dl_fixup函数</p>
+<p>也就是最终到libc找真是地址的函数</p>
+<img src="/2025/03/04/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/Snipaste_2025-03-04_18-24-55-1741084407261-2.png" class="" title="Snipaste_2025-03-04_18-24-55">
+
+<h3 id="Related-Dynamic-Sections"><a href="#Related-Dynamic-Sections" class="headerlink" title="Related Dynamic Sections"></a>Related Dynamic Sections</h3><p>在深入了解_dl_runtime_resolve函数是怎么寻找到真实地址之前我们需要先了解几个基本结构体</p>
+<img src="/2025/03/04/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/ret2dlresolve--2.related-sections.png" class="" title="ret2dlresolve--2.related-sections">
+
+<h4 id="Elf-Rel结构体"><a href="#Elf-Rel结构体" class="headerlink" title="Elf_Rel结构体"></a>Elf_Rel结构体</h4><p>Elf_Rel实例化的每一个项组成了.rel.plt节</p>
+<p>ELF 文件中的 <code>.rel.plt</code> 是一个 <strong>重定位表（Relocation Table）</strong>，用于存储 <strong>PLT（Procedure Linkage Table）</strong> 相关的重定位信息，主要用于延迟绑定（Lazy Binding）。</p>
+<p>我们只关心Elf_Rel结构体的两个域，一个是r_offset一个是r_info，r_offset是用于告诉解析真实地址的函数解析后的地址往哪里写，r_info则是当前项所代表的函数在.dynsym节中的偏移，下面放出Elf_Rel结构体的代码</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">typedef struct &#123;</span><br><span class="line">    Elf32_Addr  r_offset;  /* 需要进行重定位的地址 */</span><br><span class="line">    Elf32_Word  r_info;    /* 符号表索引和重定位类型 */</span><br><span class="line">&#125; Elf32_Rel;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h4 id="Elf-Sym结构体"><a href="#Elf-Sym结构体" class="headerlink" title="Elf_Sym结构体"></a>Elf_Sym结构体</h4><p>符号表（Symbol Table）用于记录程序中所有函数和全局变量的信息。每个符号在符号表中对应一个条目，这些条目由 <code>Elf32_Sym</code> 或 <code>Elf64_Sym</code> 结构体表示</p>
+<p>我们在ELF32_Sym主要关心st_name，st_name是当前项所代表的函数在.dynstr节中的偏移</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">typedef struct &#123;</span><br><span class="line">    Elf32_Word  st_name;  /* 符号名在字符串表中的下标 */</span><br><span class="line">    Elf32_Addr  st_value; /* 符号对应的值（地址或偏移量） */</span><br><span class="line">    Elf32_Word  st_size;  /* 符号的大小 */</span><br><span class="line">    unsigned char st_info; /* 符号类型和绑定信息 */</span><br><span class="line">    unsigned char st_other;/* 其他信息（通常未使用，值为 0） */</span><br><span class="line">    Elf32_Half  st_shndx; /* 符号所在的节在节头表中的索引 */</span><br><span class="line">&#125; Elf32_Sym;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h4 id="dynstr"><a href="#dynstr" class="headerlink" title="dynstr"></a>dynstr</h4><p>在动态链接过程中，<code>.dynstr</code> 节与 <code>.dynsym</code> 节协同工作。<code>.dynsym</code> 节保存需要动态链接的符号表，每个符号都有一个 <code>st_name</code> 字段，该字段是一个索引，指向 <code>.dynstr</code> 节中相应符号名称的起始位置</p>
+<p>.dynstr节是用来存放动态链接中所需解析的函数名的</p>
 ]]></content>
   </entry>
 </search>
