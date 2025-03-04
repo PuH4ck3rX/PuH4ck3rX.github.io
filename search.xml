@@ -29,7 +29,7 @@
 
 <p><strong>_dl_runtime_resolve</strong>函数有两个参数，一个是reloc_index(<strong>reloc_index参数标识了具体要导入哪个函数</strong>)，一个是link_map的地址</p>
 <p>这里和普通函数调用方式不一样，会先push一个reloc_index，然后跳转到一个地址，push link_map的地址</p>
-<p>然后再跳转到**_dl_runtime_resolve**，我们会发现 <strong>_dl_runtime_resolve</strong>函数最终调用的是_dl_fixup函数</p>
+<p>然后再跳转到**_dl_runtime_resolve**，我们会发现**_dl_runtime_resolve**函数最终调用的是_dl_fixup函数</p>
 <p>也就是最终到libc找真是地址的函数</p>
 <img src="/2025/03/04/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/Snipaste_2025-03-04_18-24-55-1741084407261-2.png" class="" title="Snipaste_2025-03-04_18-24-55">
 
@@ -75,6 +75,71 @@
 <img src="/2025/03/04/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/202406051458206.png" class="" width="202406051458206">
 
 <h3 id="动态调式查看具体解析流程"><a href="#动态调式查看具体解析流程" class="headerlink" title="动态调式查看具体解析流程"></a>动态调式查看具体解析流程</h3><p>直接这样说肯定不足以深入理解的，所以接下来会通过动态调式来查看具体解析流程</p>
+<h4 id="确定link-map中l-info的地址"><a href="#确定link-map中l-info的地址" class="headerlink" title="确定link_map中l_info的地址"></a>确定link_map中l_info的地址</h4><p>不同的glibc版本l_info可能不同，网上并没有找到一个准确的偏移</p>
+<p>但是通过观察link_map结构体不难发现l_info之前的成员有8个</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">l_addr</span><br><span class="line">l_name</span><br><span class="line">l_ld）</span><br><span class="line">l_next</span><br><span class="line">l_prev</span><br><span class="line">l_real</span><br><span class="line">l_ns</span><br><span class="line">l_libname</span><br></pre></td></tr></table></figure>
+
+<p>那么通常情况下偏移应该就是0x20(调式环境为32位，如果是64位偏移通常应该是0x40)</p>
+<p>知道了l_info的地址，就可以通过相关的d_tag的地址找到我们需要的段的基地址了</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">#define DT_STRTAB              5                /* Address of string table */</span><br><span class="line">#define DT_SYMTAB              6                /* Address of symbol table */</span><br><span class="line">#define DT_JMPREL             23                /* Address of PLT relocs */</span><br></pre></td></tr></table></figure>
+
+<img src="/2025/03/04/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/Snipaste_2025-03-04_23-43-35.png" class="" title="Snipaste_2025-03-04_23-43-35">
+
+<h4 id="确定动态链接所需的几个节的地址"><a href="#确定动态链接所需的几个节的地址" class="headerlink" title="确定动态链接所需的几个节的地址"></a>确定动态链接所需的几个节的地址</h4><p>然后我们通过d_tag找到对应段的基地址</p>
+<p>这里给出一个公式</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">DT_xxx_addr = ptr [l_info_addr + lenth * (offset - 1)]</span><br><span class="line">lenth为字长</span><br><span class="line">offset位DT_xxx对应于l_info的条目</span><br></pre></td></tr></table></figure>
+
+
+
+<h5 id="dynstr-addr"><a href="#dynstr-addr" class="headerlink" title="dynstr_addr"></a>dynstr_addr</h5><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">DT_STRTAB_addr = ptr [0xf7ffda44 + 0x4 * (5 - 1)] = 0x8049804</span><br></pre></td></tr></table></figure>
+
+<p>我们可以发现动态调试和我们在IDA里看到的却是是一样的</p>
+<p>dynstr的地址是0x0804824C</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">DT_STRTAB_addr = ptr [l_info_addr + 0x4 * (5-1)]</span><br></pre></td></tr></table></figure>
+
+<img src="/2025/03/04/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/Snipaste_2025-03-05_00-07-40.png" class="" title="Snipaste_2025-03-05_00-07-40">
+
+
+
+<img src="/2025/03/04/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/image-20250305002003747.png" class="" title="image-20250305002003747">
+
+
+
+<img src="/2025/03/04/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/image-20250305002029521.png" class="" title="image-20250305002029521">
+
+<h5 id="dynsym-addr"><a href="#dynsym-addr" class="headerlink" title="dynsym_addr"></a>dynsym_addr</h5><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">DT_SYMTAB_addr = ptr [0xf7ffda44 + 0x4 * (6 - 1)] = 0x804980c</span><br></pre></td></tr></table></figure>
+
+<p>dynsym的地址是0x080481AC</p>
+<img src="/2025/03/04/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/image-20250305003048577.png" class="" title="image-20250305003048577">
+
+<img src="/2025/03/04/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/image-20250305003232146.png" class="" title="image-20250305003232146">
+
+<img src="/2025/03/04/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/image-20250305003304085.png" class="" title="image-20250305003304085">
+
+<h5 id="rel-plt-addr"><a href="#rel-plt-addr" class="headerlink" title=".rel.plt_addr"></a>.rel.plt_addr</h5><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">DT_JMPREL_addr = ptr [0xf7ffda44 + 0x4 * (23 - 1)] = 0x8049844</span><br></pre></td></tr></table></figure>
+
+<p>.rel.plt的地址是0x8048304</p>
+<img src="/2025/03/04/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/image-20250305004030135.png" class="" title="image-20250305004030135">
+
+<img src="/2025/03/04/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/image-20250305003736753.png" class="" title="image-20250305003736753">
+
+<img src="/2025/03/04/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/image-20250305003844655.png" class="" title="image-20250305003844655">
+
+<h4 id="通过read函数来观察是怎么找到符号名称的"><a href="#通过read函数来观察是怎么找到符号名称的" class="headerlink" title="通过read函数来观察是怎么找到符号名称的"></a>通过read函数来观察是怎么找到符号名称的</h4><p>read函数的reloc_index是8</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">r_info = ptr [.rel.plt_addr + reloc_index + 0x8] = 0x207</span><br></pre></td></tr></table></figure>
+
+<img src="/2025/03/04/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/image-20250305004650994.png" class="" title="image-20250305004650994">
+
+<img src="/2025/03/04/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/image-20250305005337679.png" class="" title="image-20250305005337679">
+
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">st_name = ptr [dynsym_addr + (r_info&gt;&gt;8) * 0x10] = 0x27</span><br></pre></td></tr></table></figure>
+
+<img src="/2025/03/04/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/image-20250305011200923.png" class="" title="image-20250305011200923">
+
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">read_str = ptr [.dynstr_addr + st_name] = /* &#x27;read&#x27; */</span><br></pre></td></tr></table></figure>
+
+<img src="/2025/03/04/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/image-20250305011401972.png" class="" title="image-20250305011401972">
+
 ]]></content>
   </entry>
 </search>
