@@ -24,13 +24,13 @@
     <content><![CDATA[<h2 id="ret2dlresovle攻击原理"><a href="#ret2dlresovle攻击原理" class="headerlink" title="ret2dlresovle攻击原理"></a>ret2dlresovle攻击原理</h2><p>ret2dlresovle攻击的本质就是在于程序在动态链接时篡改相关结构体，让程序解析到错误的函数，进而达成攻击</p>
 <h3 id="Lazy-Binding"><a href="#Lazy-Binding" class="headerlink" title="Lazy Binding"></a>Lazy Binding</h3><p>当程序在第一次调用某个函数时，会调用_dl_runtime_resolve函数从libc中获取这个函数的真实地址</p>
 <p>那么具体是怎么实现的呢？</p>
-<p>动态链接的程序调用函数时会先call的时一个函数的plt表，如read@plt，执行read@plt表里的第一条指令，read@plt表里的第一条指令是jmp到got表中，执行got表里存放的地址所指向的指令，got表默认存放的是read@plt中下一条指令的地址，通过_dl_runtime_resolve函数解析libc中的真实地址后会将函数的真是地址填入到该函数的got表中</p>
+<p>动态链接的程序调用函数时会先call的时一个函数的plt表，如read@plt，执行read@plt表里的第一条指令，read@plt表里的第一条指令是jmp到got表中，执行got表里存放的地址所指向的指令，got表默认存放的是read@plt中下一条指令的地址，通过_dl_runtime_resolve函数解析libc中的真实地址后会将函数的真实地址填入到该函数的got表中</p>
 <img src="/2025/03/04/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/Snipaste_2025-03-04_18-24-55.png" class="" title="Snipaste_2025-03-04_18-24-55">
 
 <p><strong>_dl_runtime_resolve</strong>函数有两个参数，一个是reloc_index(<strong>reloc_index参数标识了具体要导入哪个函数</strong>)，一个是link_map的地址</p>
 <p>这里和普通函数调用方式不一样，会先push一个reloc_index，然后跳转到一个地址，push link_map的地址</p>
 <p>然后再跳转到_dl_runtime_resolve，我们会发现dl_runtime_resolve函数最终调用的是_dl_fixup函数</p>
-<p>也就是最终到libc找真是地址的函数</p>
+<p>也就是最终到libc真实地址的函数</p>
 <img src="/2025/03/04/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/Snipaste_2025-03-04_18-24-55-1741084407261-2.png" class="" title="Snipaste_2025-03-04_18-24-55">
 
 <h3 id="Related-Dynamic-Sections"><a href="#Related-Dynamic-Sections" class="headerlink" title="Related Dynamic Sections"></a>Related Dynamic Sections</h3><p>在深入了解_dl_runtime_resolve函数是怎么寻找到真实地址之前我们需要先了解几个基本结构体</p>
