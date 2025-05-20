@@ -6,17 +6,20 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="HandheldFriendly" content="True">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
-    <meta name="description" content="&#x2F;* 链接容器样式 *&#x2F;       .links-content {         margin-top: 1rem;       }    &#x2F;* 清除浮动 *&#x2F;   .link-navigation::after &#123;     content: &quot; &quot;;     display: block;     clear: both;   &amp;">
+    <meta name="description" content=".links-content{          margin-top:1rem;          }          .link-navigation::after {          content: &quot; &quot;;          display: block;          clear: both;          }          .">
 <meta property="og:type" content="website">
-<meta property="og:title" content="links">
+<meta property="og:title" content="PuH4ck3rX&#39;s Blog">
 <meta property="og:url" content="http://example.com/links/index.html">
 <meta property="og:site_name" content="PuH4ck3rX&#39;s Blog">
-<meta property="og:description" content="&#x2F;* 链接容器样式 *&#x2F;       .links-content {         margin-top: 1rem;       }    &#x2F;* 清除浮动 *&#x2F;   .link-navigation::after &#123;     content: &quot; &quot;;     display: block;     clear: both;   &amp;">
+<meta property="og:description" content=".links-content{          margin-top:1rem;          }          .link-navigation::after {          content: &quot; &quot;;          display: block;          clear: both;          }          .">
 <meta property="og:locale" content="en_US">
-<meta property="article:published_time" content="2025-04-30T13:52:05.000Z">
-<meta property="article:modified_time" content="2025-05-20T14:55:59.434Z">
+<meta property="og:image" content="https://khighl.github.io/avatar/avatar.webp">
+<meta property="og:image" content="https://www.snowywar.top/wp-content/uploads/2019/09/timg.jpg">
+<meta property="article:published_time" content="2025-05-20T15:03:04.313Z">
+<meta property="article:modified_time" content="2025-05-20T15:03:04.313Z">
 <meta property="article:author" content="PuH4ck3rX">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://khighl.github.io/avatar/avatar.webp">
     
     
       
@@ -36,7 +39,7 @@
       
     
     <!-- title -->
-    <title>links</title>
+    <title>PuH4ck3rX&#39;s Blog</title>
     <!-- async scripts -->
     <!-- Google Analytics -->
 
@@ -99,126 +102,94 @@
   <div class="content" itemprop="articleBody">
       
           <div class="post-body">
-  <div id="links">
-    <style>
-      /* 链接容器样式 */
-      .links-content {
-        margin-top: 1rem;
-      }
+   <div id="links">
+      <style>
+         .links-content{
+         margin-top:1rem;
+         }
+         .link-navigation::after {
+         content: " ";
+         display: block;
+         clear: both;
+         }
+         .card {
+         width: 45%;
+         font-size: 1rem;
+         padding: 10px 20px;
+         border-radius: 4px;
+         transition-duration: 0.15s;
+         margin-bottom: 1rem;
+         display:flex;
+         }
+         .card:nth-child(odd) {
+         float: left;
+         }
+         .card:nth-child(even) {
+         float: right;
+         }
+         .card:hover {
+         transform: scale(1.1);
+         box-shadow: 0 2px 6px 0 rgba(0, 0, 0, 0.12), 0 0 6px 0 rgba(0, 0, 0, 0.04);
+         }
+         .card a {
+         border:none;
+         }
+         .card .ava {
+         width: 3rem!important;
+         height: 3rem!important;
+         margin:0!important;
+         margin-right: 1em!important;
+         border-radius:4px;
+         }
+         .card .card-header {
+         font-style: italic;
+         overflow: hidden;
+         width: 100%;
+         }
+         .card .card-header a {
+         font-style: normal;
+         color: #2bbc8a;
+         font-weight: bold;
+         text-decoration: none;
+         }
+         .card .card-header a:hover {
+         color: #d480aa;
+         text-decoration: none;
+         }
+         .card .card-header .info {
+         font-style:normal;
+         color:#a3a3a3;
+         font-size:14px;
+         min-width: 0;
+         overflow: hidden;
+         white-space: nowrap;
+         }
+      </style>
+      <div class="links-content">
+         <div class="link-navigation">
+            <div class="card">
+               <img class="ava" src="https://khighl.github.io/avatar/avatar.webp">
+               <div class="card-header">
+                  <div>
+                     <a target="_blank" rel="noopener" href="https://khighl.github.io/">2er00ne'blog</a>
+                  </div>
+                  <div class="info">V&N|好队友|Pwn的未来之星</div>
+               </div>
+            </div>
+            <div class="card">
+               <img class="ava" src="https://www.snowywar.top/wp-content/uploads/2019/09/timg.jpg">
+               <div class="card-header">
+                  <div>
+                     <a target="_blank" rel="noopener" href="http://www.0xh41f.top/">0xh41f'blog</a>
+                  </div>
+                  <div class="info">抽象|孙笑川|理塘丁真|人机|爆零大王</div>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
 
-<pre><code>  /* 清除浮动 */
-  .link-navigation::after &#123;
-    content: &quot; &quot;;
-    display: block;
-    clear: both;
-  &#125;
-
-  /* 卡片基础样式 */
-  .card &#123;
-    width: 45%;
-    padding: 10px 20px;
-    margin-bottom: 1rem;
-    border-radius: 4px;
-    font-size: 1rem;
-    display: flex;
-    transition-duration: 0.15s;
-  &#125;
-
-  /* 奇数卡片靠左 */
-  .card:nth-child(odd) &#123;
-    float: left;
-  &#125;
-
-  /* 偶数卡片靠右 */
-  .card:nth-child(even) &#123;
-    float: right;
-  &#125;
-
-  /* 悬浮效果 */
-  .card:hover &#123;
-    transform: scale(1.1);
-    box-shadow: 0 2px 6px 0 rgba(0, 0, 0, 0.12), 
-                0 0 6px 0 rgba(0, 0, 0, 0.04);
-  &#125;
-
-  /* 头像样式 */
-  .ava &#123;
-    width: 3rem !important;
-    height: 3rem !important;
-    margin: 0 !important;
-    margin-right: 1em !important;
-    border-radius: 4px;
-  &#125;
-
-  /* 卡片头部样式 */
-  .card-header &#123;
-    width: 100%;
-    overflow: hidden;
-    font-style: italic;
-  &#125;
-
-  /* 链接样式 */
-  .card a &#123;
-    border: none;
-    font-style: normal;
-    font-weight: bold;
-    text-decoration: none;
-    color: #2bbc8a;
-  &#125;
-
-  .card a:hover &#123;
-    color: #d480aa;
-  &#125;
-
-  /* 描述信息 */
-  .info &#123;
-    color: #a3a3a3;
-    font-size: 14px;
-    font-style: normal;
-    white-space: nowrap;
-    overflow: hidden;
-    min-width: 0;
-  &#125;
-&lt;/style&gt;
-
-&lt;div class=&quot;links-content&quot;&gt;
-  &lt;div class=&quot;link-navigation&quot;&gt;
-    &lt;!-- 友链卡片 1 --&gt;
-    &lt;div class=&quot;card&quot;&gt;
-      &lt;img class=&quot;ava&quot; 
-           src=&quot;https://khighl.github.io/avatar/avatar.webp&quot; 
-           alt=&quot;2er00ne的博客头像&quot;
-           loading=&quot;lazy&quot;&gt;
-      &lt;div class=&quot;card-header&quot;&gt;
-        &lt;a href=&quot;https://khighl.github.io/V&amp;N&quot; 
-           target=&quot;_blank&quot;
-           rel=&quot;noopener noreferrer&quot;&gt;
-           2er00ne&#39;blog
-        &lt;/a&gt;
-        &lt;div class=&quot;info&quot;&gt;V&amp;N|好队友|Pwn的未来之星&lt;/div&gt;
-      &lt;/div&gt;
-    &lt;/div&gt;
-
-    &lt;!-- 友链卡片 2 --&gt;
-    &lt;div class=&quot;card&quot;&gt;
-      &lt;img class=&quot;ava&quot;
-           src=&quot;https://www.snowywar.top/wp-content/uploads/2019/09/timg.jpg&quot;
-           alt=&quot;0xh41f的博客头像&quot;
-           loading=&quot;lazy&quot;&gt;
-      &lt;div class=&quot;card-header&quot;&gt;
-        &lt;a href=&quot;http://www.0xh41f.top/&quot;
-           target=&quot;_blank&quot;
-           rel=&quot;noopener noreferrer&quot;&gt;
-           0xh41f&#39;blog
-        &lt;/a&gt;
-        &lt;div class=&quot;info&quot;&gt;抽象|孙笑川|理塘丁真|人机|爆零大王&lt;/div&gt;
-      &lt;/div&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
-&lt;/div&gt;
-</code></pre>
-  </div>
-</div></style></div></div>
         
   </div>
 </article>
