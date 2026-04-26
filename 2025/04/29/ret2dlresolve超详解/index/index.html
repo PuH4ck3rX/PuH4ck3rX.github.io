@@ -9,38 +9,38 @@
     <meta name="description" content="ret2dlresovle攻击原理ret2dlresovle攻击的本质就是在于程序在动态链接时篡改相关结构体，让程序解析到错误的函数，进而达成攻击 Lazy Binding当程序在第一次调用某个函数时，会调用_dl_runtime_resolve函数从libc中获取这个函数的真实地址 那么具体是怎么实现的呢？ 动态链接的程序调用函数时会先call一个函数的plt表，如read@plt，执行read">
 <meta property="og:type" content="article">
 <meta property="og:title" content="ret2dlresolve超详解">
-<meta property="og:url" content="http://example.com/2025/04/29/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/index/index.html">
+<meta property="og:url" content="https://puh4ck3rx.github.io/2025/04/29/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/index/index.html">
 <meta property="og:site_name" content="PuH4ck3rX&#39;s Blog">
 <meta property="og:description" content="ret2dlresovle攻击原理ret2dlresovle攻击的本质就是在于程序在动态链接时篡改相关结构体，让程序解析到错误的函数，进而达成攻击 Lazy Binding当程序在第一次调用某个函数时，会调用_dl_runtime_resolve函数从libc中获取这个函数的真实地址 那么具体是怎么实现的呢？ 动态链接的程序调用函数时会先call一个函数的plt表，如read@plt，执行read">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://example.com/2025/04/29/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/index/Snipaste_2025-03-04_18-24-55-1745939812038-1.png">
-<meta property="og:image" content="http://example.com/2025/04/29/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/index/Snipaste_2025-03-04_18-24-55-1741084407261-2-1745939812039-3.png">
-<meta property="og:image" content="http://example.com/2025/04/29/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/index/ret2dlresolve--2.related-sections-1745939812039-5.png">
-<meta property="og:image" content="http://example.com/2025/04/29/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/index/202406051458206-1745939812039-7.png">
-<meta property="og:image" content="http://example.com/2025/04/29/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/index/Snipaste_2025-03-04_23-43-35-1745939812039-9.png">
-<meta property="og:image" content="http://example.com/2025/04/29/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/index/Snipaste_2025-03-05_00-07-40-1745939812039-13.png">
-<meta property="og:image" content="http://example.com/2025/04/29/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/index/image-20250305002003747-1745939812039-11.png">
-<meta property="og:image" content="http://example.com/2025/04/29/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/index/image-20250305002029521-1745939812039-15.png">
-<meta property="og:image" content="http://example.com/2025/04/29/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/index/image-20250305003048577-1745939812039-17.png">
-<meta property="og:image" content="http://example.com/2025/04/29/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/index/image-20250305003232146-1745939812039-19.png">
-<meta property="og:image" content="http://example.com/2025/04/29/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/index/image-20250305003304085-1745939812039-21.png">
-<meta property="og:image" content="http://example.com/2025/04/29/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/index/image-20250305004030135.png">
-<meta property="og:image" content="http://example.com/2025/04/29/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/index/image-20250305003736753.png">
-<meta property="og:image" content="http://example.com/2025/04/29/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/index/image-20250305003844655.png">
-<meta property="og:image" content="http://example.com/2025/04/29/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/index/image-20250305004650994.png">
-<meta property="og:image" content="http://example.com/2025/04/29/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/index/image-20250305005337679.png">
-<meta property="og:image" content="http://example.com/2025/04/29/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/index/image-20250305011200923.png">
-<meta property="og:image" content="http://example.com/2025/04/29/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/index/image-20250305011401972.png">
-<meta property="og:image" content="http://example.com/2025/04/29/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/index/image-20250305185526111.png">
-<meta property="og:image" content="http://example.com/2025/04/29/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/index/image-20250306103950624.png">
-<meta property="og:image" content="http://example.com/2025/04/29/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/index/image-20250813190723225.png">
-<meta property="og:image" content="http://example.com/2025/04/29/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/index/ret2dlresolve--4.Partial-RELRO.No-Leak.png">
-<meta property="og:image" content="http://example.com/2025/04/29/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/index/ret2dlresolve--4.Partial-RELRO.No-Leak.2.png">
+<meta property="og:image" content="https://puh4ck3rx.github.io/2025/04/29/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/index/Snipaste_2025-03-04_18-24-55-1745939812038-1.png">
+<meta property="og:image" content="https://puh4ck3rx.github.io/2025/04/29/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/index/Snipaste_2025-03-04_18-24-55-1741084407261-2-1745939812039-3.png">
+<meta property="og:image" content="https://puh4ck3rx.github.io/2025/04/29/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/index/ret2dlresolve--2.related-sections-1745939812039-5.png">
+<meta property="og:image" content="https://puh4ck3rx.github.io/2025/04/29/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/index/202406051458206-1745939812039-7.png">
+<meta property="og:image" content="https://puh4ck3rx.github.io/2025/04/29/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/index/Snipaste_2025-03-04_23-43-35-1745939812039-9.png">
+<meta property="og:image" content="https://puh4ck3rx.github.io/2025/04/29/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/index/Snipaste_2025-03-05_00-07-40-1745939812039-13.png">
+<meta property="og:image" content="https://puh4ck3rx.github.io/2025/04/29/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/index/image-20250305002003747-1745939812039-11.png">
+<meta property="og:image" content="https://puh4ck3rx.github.io/2025/04/29/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/index/image-20250305002029521-1745939812039-15.png">
+<meta property="og:image" content="https://puh4ck3rx.github.io/2025/04/29/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/index/image-20250305003048577-1745939812039-17.png">
+<meta property="og:image" content="https://puh4ck3rx.github.io/2025/04/29/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/index/image-20250305003232146-1745939812039-19.png">
+<meta property="og:image" content="https://puh4ck3rx.github.io/2025/04/29/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/index/image-20250305003304085-1745939812039-21.png">
+<meta property="og:image" content="https://puh4ck3rx.github.io/2025/04/29/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/index/image-20250305004030135.png">
+<meta property="og:image" content="https://puh4ck3rx.github.io/2025/04/29/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/index/image-20250305003736753.png">
+<meta property="og:image" content="https://puh4ck3rx.github.io/2025/04/29/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/index/image-20250305003844655.png">
+<meta property="og:image" content="https://puh4ck3rx.github.io/2025/04/29/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/index/image-20250305004650994.png">
+<meta property="og:image" content="https://puh4ck3rx.github.io/2025/04/29/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/index/image-20250305005337679.png">
+<meta property="og:image" content="https://puh4ck3rx.github.io/2025/04/29/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/index/image-20250305011200923.png">
+<meta property="og:image" content="https://puh4ck3rx.github.io/2025/04/29/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/index/image-20250305011401972.png">
+<meta property="og:image" content="https://puh4ck3rx.github.io/2025/04/29/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/index/image-20250305185526111.png">
+<meta property="og:image" content="https://puh4ck3rx.github.io/2025/04/29/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/index/image-20250306103950624.png">
+<meta property="og:image" content="https://puh4ck3rx.github.io/2025/04/29/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/index/image-20250813190723225.png">
+<meta property="og:image" content="https://puh4ck3rx.github.io/2025/04/29/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/index/ret2dlresolve--4.Partial-RELRO.No-Leak.png">
+<meta property="og:image" content="https://puh4ck3rx.github.io/2025/04/29/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/index/ret2dlresolve--4.Partial-RELRO.No-Leak.2.png">
 <meta property="article:published_time" content="2025-04-29T14:55:50.000Z">
 <meta property="article:modified_time" content="2025-12-08T18:43:37.480Z">
 <meta property="article:author" content="PuH4ck3rX">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/2025/04/29/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/index/Snipaste_2025-03-04_18-24-55-1745939812038-1.png">
+<meta name="twitter:image" content="https://puh4ck3rx.github.io/2025/04/29/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/index/Snipaste_2025-03-04_18-24-55-1745939812038-1.png">
     
     
       
@@ -121,17 +121,17 @@
     <br/>
     <div id="share" style="display: none">
       <ul>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2025/04/29/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/index/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2025/04/29/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/index/&text=ret2dlresolve超详解"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2025/04/29/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/index/&title=ret2dlresolve超详解"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2025/04/29/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/index/&is_video=false&description=ret2dlresolve超详解"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=ret2dlresolve超详解&body=Check out this article: http://example.com/2025/04/29/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/index/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2025/04/29/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/index/&title=ret2dlresolve超详解"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2025/04/29/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/index/&title=ret2dlresolve超详解"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2025/04/29/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/index/&title=ret2dlresolve超详解"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2025/04/29/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/index/&title=ret2dlresolve超详解"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2025/04/29/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/index/&name=ret2dlresolve超详解&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2025/04/29/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/index/&t=ret2dlresolve超详解"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://puh4ck3rx.github.io/2025/04/29/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/index/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://puh4ck3rx.github.io/2025/04/29/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/index/&text=ret2dlresolve超详解"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://puh4ck3rx.github.io/2025/04/29/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/index/&title=ret2dlresolve超详解"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://puh4ck3rx.github.io/2025/04/29/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/index/&is_video=false&description=ret2dlresolve超详解"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=ret2dlresolve超详解&body=Check out this article: https://puh4ck3rx.github.io/2025/04/29/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/index/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://puh4ck3rx.github.io/2025/04/29/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/index/&title=ret2dlresolve超详解"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://puh4ck3rx.github.io/2025/04/29/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/index/&title=ret2dlresolve超详解"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://puh4ck3rx.github.io/2025/04/29/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/index/&title=ret2dlresolve超详解"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://puh4ck3rx.github.io/2025/04/29/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/index/&title=ret2dlresolve超详解"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://puh4ck3rx.github.io/2025/04/29/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/index/&name=ret2dlresolve超详解&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://puh4ck3rx.github.io/2025/04/29/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/index/&t=ret2dlresolve超详解"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
 </ul>
 
     </div>
@@ -409,17 +409,17 @@
 
     <div id="share-footer" style="display: none">
       <ul>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2025/04/29/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/index/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2025/04/29/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/index/&text=ret2dlresolve超详解"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2025/04/29/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/index/&title=ret2dlresolve超详解"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2025/04/29/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/index/&is_video=false&description=ret2dlresolve超详解"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=ret2dlresolve超详解&body=Check out this article: http://example.com/2025/04/29/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/index/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2025/04/29/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/index/&title=ret2dlresolve超详解"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2025/04/29/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/index/&title=ret2dlresolve超详解"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2025/04/29/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/index/&title=ret2dlresolve超详解"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2025/04/29/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/index/&title=ret2dlresolve超详解"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2025/04/29/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/index/&name=ret2dlresolve超详解&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2025/04/29/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/index/&t=ret2dlresolve超详解"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://puh4ck3rx.github.io/2025/04/29/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/index/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://puh4ck3rx.github.io/2025/04/29/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/index/&text=ret2dlresolve超详解"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://puh4ck3rx.github.io/2025/04/29/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/index/&title=ret2dlresolve超详解"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://puh4ck3rx.github.io/2025/04/29/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/index/&is_video=false&description=ret2dlresolve超详解"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=ret2dlresolve超详解&body=Check out this article: https://puh4ck3rx.github.io/2025/04/29/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/index/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://puh4ck3rx.github.io/2025/04/29/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/index/&title=ret2dlresolve超详解"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://puh4ck3rx.github.io/2025/04/29/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/index/&title=ret2dlresolve超详解"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://puh4ck3rx.github.io/2025/04/29/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/index/&title=ret2dlresolve超详解"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://puh4ck3rx.github.io/2025/04/29/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/index/&title=ret2dlresolve超详解"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://puh4ck3rx.github.io/2025/04/29/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/index/&name=ret2dlresolve超详解&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://puh4ck3rx.github.io/2025/04/29/ret2dlresolve%E8%B6%85%E8%AF%A6%E8%A7%A3/index/&t=ret2dlresolve超详解"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
 </ul>
 
     </div>
